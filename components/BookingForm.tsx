@@ -49,6 +49,19 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
     loadTeamLimits()
   }, [])
 
+  useEffect(() => {
+    // Reset sport selection when gender changes to ensure valid options
+    if (formData.gender === 'female') {
+      if (formData.sport === 'cricket' || formData.sport === 'football' || formData.sport === 'faculty') {
+        setFormData(prev => ({ ...prev, sport: 'volleyball' }))
+      }
+    } else {
+      if (formData.sport === 'volleyball' && formData.gender === 'female') {
+        setFormData(prev => ({ ...prev, sport: 'cricket' }))
+      }
+    }
+  }, [formData.gender])
+
   const getSeatLabel = (seatNumber: number) => {
     const rowIdx = Math.floor((seatNumber - 1) / 5)
     const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
@@ -337,13 +350,20 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
                 onChange={(e) => setFormData({ ...formData, sport: e.target.value as any })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
-                <option value="cricket">Cricket (Male) - {getTeamAvailability('cricket', 'male').available}/12 available</option>
-                <option value="volleyball">Volleyball (Male) - {getTeamAvailability('volleyball', 'male').available}/7 available</option>
-                <option value="volleyball">Volleyball (Female) - {getTeamAvailability('volleyball', 'female').available}/12 available</option>
-                <option value="basketball">Basketball (Male) - {getTeamAvailability('basketball', 'male').available}/5 available</option>
-                <option value="basketball">Basketball (Female) - {getTeamAvailability('basketball', 'female').available}/7 available</option>
-                <option value="football">Football (Male) - {getTeamAvailability('football', 'male').available}/7 available</option>
-                <option value="faculty">Faculty - {getTeamAvailability('faculty', 'male').available}/3 available</option>
+                {formData.gender === 'male' ? (
+                  <>
+                    <option value="cricket">Cricket (Male) - {getTeamAvailability('cricket', 'male').available}/12 available</option>
+                    <option value="volleyball">Volleyball (Male) - {getTeamAvailability('volleyball', 'male').available}/7 available</option>
+                    <option value="basketball">Basketball (Male) - {getTeamAvailability('basketball', 'male').available}/5 available</option>
+                    <option value="football">Football (Male) - {getTeamAvailability('football', 'male').available}/7 available</option>
+                    <option value="faculty">Faculty - {getTeamAvailability('faculty', 'male').available}/3 available</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="volleyball">Volleyball (Female) - {getTeamAvailability('volleyball', 'female').available}/12 available</option>
+                    <option value="basketball">Basketball (Female) - {getTeamAvailability('basketball', 'female').available}/7 available</option>
+                  </>
+                )}
               </select>
             </div>
 
