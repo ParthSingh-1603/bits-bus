@@ -7,7 +7,13 @@ import { supabase } from '@/lib/supabase'
 interface BookingFormProps {
   seatNumber: number
   onClose: () => void
-  onComplete: () => void
+  onComplete: (bookingDetails: {
+    studentName: string;
+    seatNumber: number;
+    sport: string;
+    gender: string;
+    seatLabel: string;
+  }) => void
 }
 
 interface TeamLimits {
@@ -42,6 +48,23 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
   useEffect(() => {
     loadTeamLimits()
   }, [])
+
+  const getSeatLabel = (seatNumber: number) => {
+    const rowIdx = Math.floor((seatNumber - 1) / 5)
+    const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
+    const seatInRow = seatNumber - (rowIdx * 5)
+    
+    // Handle K row which has 6 seats (3+3)
+    if (rowLabel === 'K') {
+      if (seatInRow <= 3) {
+        return `K${seatInRow}`
+      } else {
+        return `K${seatInRow + 1}` // Skip the middle seat numbering
+      }
+    }
+    
+    return `${rowLabel}${seatInRow}`
+  }
 
   const loadTeamLimits = async () => {
     try {
@@ -191,7 +214,13 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
         return
       }
 
-      onComplete()
+      onComplete({
+        studentName: formData.studentName.trim(),
+        seatNumber: seatNumber,
+        sport: formData.sport,
+        gender: formData.gender,
+        seatLabel: getSeatLabel(seatNumber)
+      })
     } catch (error) {
       console.error('Error submitting booking:', error)
       setError('An unexpected error occurred. Please try again.')

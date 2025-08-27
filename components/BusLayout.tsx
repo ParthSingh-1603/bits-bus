@@ -10,10 +10,10 @@ interface BusLayoutProps {
 }
 
 export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayoutProps) {
-  // 2 seats on the left, 3 on the right => 5 per row, 11 rows for 55
-  const totalSeats = 55
+  // 2 seats on the left, 3 on the right => 5 per row for A-J, 6 seats for K row (3+3)
+  const totalSeats = 56
   const seatsPerRow = 5
-  const numRows = Math.ceil(totalSeats / seatsPerRow)
+  const numRows = 11 // A through K
 
   const getSeatClass = (seat: Seat | undefined, seatNumber: number) => {
     if (seatNumber === selectedSeat) {
@@ -49,20 +49,24 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
           </div>
         </div>
 
-        {/* Passenger seats: 2 (left) + aisle + 3 (right) */}
+        {/* Passenger seats: 2 (left) + aisle + 3 (right) for A-J, 3+3 for K row */}
         <div className="space-y-4">
           {Array.from({ length: numRows }, (_, rowIdx) => {
             const rowStart = rowIdx * seatsPerRow + 1
             const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
+            const isKRow = rowLabel === 'K'
+            const leftSeats = isKRow ? 3 : 2
+            const rightSeats = 3
+            
             return (
               <div key={rowIdx} className="flex justify-center items-center">
                 {/* Row label */}
                 <div className="w-8 mr-2 text-right text-sm font-semibold text-gray-600 select-none">
                   {rowLabel}
                 </div>
-                {/* Left block: 2 seats */}
+                {/* Left block: 2 seats for A-J, 3 seats for K */}
                 <div className="flex gap-4">
-                  {Array.from({ length: 2 }, (_, i) => {
+                  {Array.from({ length: leftSeats }, (_, i) => {
                     const seatNumber = rowStart + i
                     if (seatNumber > totalSeats) return null
                     const seat = seats?.[seatNumber - 1]
@@ -88,11 +92,11 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
 
                 {/* Right block: 3 seats */}
                 <div className="flex gap-4">
-                  {Array.from({ length: 3 }, (_, i) => {
-                    const seatNumber = rowStart + 2 + i
+                  {Array.from({ length: rightSeats }, (_, i) => {
+                    const seatNumber = rowStart + leftSeats + i
                     if (seatNumber > totalSeats) return null
                     const seat = seats?.[seatNumber - 1]
-                    const seatLabel = `${rowLabel}${i + 3}`
+                    const seatLabel = `${rowLabel}${leftSeats + i + 1}`
                     return (
                       <div
                         key={seatNumber}

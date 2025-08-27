@@ -1,10 +1,10 @@
 # College Bus Booking System
 
-A modern web application for booking bus seats for college sports teams. This system allows students and faculty to book seats on a 55-seater bus with specific allocations for different sports teams.
+A modern web application for booking bus seats for college sports teams. This system allows students and faculty to book seats on a 56-seater bus with specific allocations for different sports teams.
 
 ## Features
 
-- **55-Seater Bus Layout**: Visual representation of bus seats with interactive booking
+- **56-Seater Bus Layout**: Visual representation of bus seats with interactive booking (K row has 6 seats)
 - **Gender-Based Booking**: Separate tracking for male and female students with pink seats for females
 - **Sports Team Allocations**:
   - Cricket (Male): 13 seats
@@ -110,7 +110,7 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ### For Students/Faculty
 
-1. **View Bus Layout**: The main page shows the 55-seater bus layout with color-coded seats
+1. **View Bus Layout**: The main page shows the 56-seater bus layout with color-coded seats (K row has 6 seats)
 2. **Select a Seat**: Click on any available (gray) seat to book it
 3. **Fill Booking Form**: 
    - Enter your full name
@@ -146,7 +146,7 @@ The system automatically tracks team allocations and prevents overbooking:
 | Column | Type | Description |
 |--------|------|-------------|
 | id | UUID | Primary key |
-| seat_number | INTEGER | Seat number (1-55) |
+| seat_number | INTEGER | Seat number (1-56) |
 | student_name | TEXT | Full name of student/faculty |
 | college_reg_no | TEXT | College registration number |
 | gender | TEXT | 'male' or 'female' |

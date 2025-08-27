@@ -13,9 +13,9 @@ export default function Home() {
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
-    totalSeats: 55,
+    totalSeats: 56,
     bookedSeats: 0,
-    availableSeats: 55,
+    availableSeats: 56,
     cricketMale: 0,
     volleyballMale: 0,
     volleyballFemale: 0,
@@ -34,7 +34,7 @@ export default function Home() {
       setLoading(true)
       
       // Initialize seats array
-      const seatsArray: Seat[] = Array.from({ length: 55 }, (_, i) => ({
+      const seatsArray: Seat[] = Array.from({ length: 56 }, (_, i) => ({
         seat_number: i + 1,
         is_booked: false,
       }))
@@ -73,9 +73,9 @@ export default function Home() {
 
   const calculateStats = (seatsArray: Seat[]) => {
     const stats = {
-      totalSeats: 55,
+      totalSeats: 56,
       bookedSeats: 0,
-      availableSeats: 55,
+      availableSeats: 56,
       cricketMale: 0,
       volleyballMale: 0,
       volleyballFemale: 0,
@@ -124,9 +124,41 @@ export default function Home() {
     }
   }
 
-  const handleBookingComplete = () => {
+  const [bookingConfirmation, setBookingConfirmation] = useState<{
+    studentName: string;
+    seatNumber: number;
+    sport: string;
+    gender: string;
+    seatLabel: string;
+  } | null>(null)
+
+  const getSeatLabel = (seatNumber: number) => {
+    const rowIdx = Math.floor((seatNumber - 1) / 5)
+    const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
+    const seatInRow = seatNumber - (rowIdx * 5)
+    
+    // Handle K row which has 6 seats (3+3)
+    if (rowLabel === 'K') {
+      if (seatInRow <= 3) {
+        return `K${seatInRow}`
+      } else {
+        return `K${seatInRow + 1}` // Skip the middle seat numbering
+      }
+    }
+    
+    return `${rowLabel}${seatInRow}`
+  }
+
+  const handleBookingComplete = (bookingDetails: {
+    studentName: string;
+    seatNumber: number;
+    sport: string;
+    gender: string;
+    seatLabel: string;
+  }) => {
     setSelectedSeat(null)
     setShowBookingForm(false)
+    setBookingConfirmation(bookingDetails)
     loadSeats() // Reload seats to show updated state
   }
 
@@ -250,6 +282,51 @@ export default function Home() {
           onClose={() => setShowBookingForm(false)}
           onComplete={handleBookingComplete}
         />
+      )}
+
+      {/* Booking Confirmation Popup */}
+      {bookingConfirmation && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg max-w-md w-full p-6 text-center">
+            <div className="mb-4">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">Booking Confirmed!</h2>
+              <p className="text-gray-600">Your seat has been successfully booked.</p>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+              <div className="grid grid-cols-2 gap-4 text-left">
+                <div>
+                  <p className="text-sm text-gray-500">Name</p>
+                  <p className="font-semibold text-gray-800">{bookingConfirmation.studentName}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Seat</p>
+                  <p className="font-semibold text-gray-800">{bookingConfirmation.seatLabel} (#{bookingConfirmation.seatNumber})</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Sport Team</p>
+                  <p className="font-semibold text-gray-800 capitalize">{bookingConfirmation.sport}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Gender</p>
+                  <p className="font-semibold text-gray-800 capitalize">{bookingConfirmation.gender}</p>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => setBookingConfirmation(null)}
+              className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
       )}
     </div>
   )
