@@ -6,7 +6,6 @@ import { supabase, Booking, Seat } from '@/lib/supabase'
 import BookingForm from '@/components/BookingForm'
 import BusLayout from '@/components/BusLayout'
 import SeatLegend from '@/components/SeatLegend'
-import AuthBar from '@/components/AuthBar'
 
 export default function Home() {
   const [seats, setSeats] = useState<Seat[]>([])
@@ -151,9 +150,6 @@ export default function Home() {
           <h1 className="text-4xl font-bold text-gray-800">College Bus Booking System</h1>
         </div>
         <p className="text-lg text-gray-600">Book your seat for the sports tournament</p>
-        <div className="mt-4 flex justify-center">
-          <AuthBar />
-        </div>
       </div>
 
       {/* Statistics */}

@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import './globals.css'
-import AuthBar from '@/components/AuthBar'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,8 +19,8 @@ export default function RootLayout({
       <body className={inter.className}>
         <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col">
           <header className="border-b bg-white/70 backdrop-blur-sm">
-            <div className="container mx-auto px-4 py-3 flex justify-end">
-              <AuthBar />
+            <div className="container mx-auto px-4 py-3">
+              {/* Header content removed */}
             </div>
           </header>
           <div className="flex-1">
