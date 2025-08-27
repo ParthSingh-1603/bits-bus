@@ -1,20 +1,20 @@
-# College Bus Booking System
+# SRM Bus Booking System by Parth Singh
 
-A modern web application for booking bus seats for college sports teams. This system allows students and faculty to book seats on a 56-seater bus with specific allocations for different sports teams.
+A modern web application for booking bus seats for SRM college sports teams. This system allows students and faculty to book seats on a 56-seater bus with specific allocations for different sports teams.
 
 ## Features
 
 - **56-Seater Bus Layout**: Visual representation of bus seats with interactive booking (K row has 6 seats)
 - **Gender-Based Booking**: Separate tracking for male and female students with pink seats for females
 - **Sports Team Allocations**:
-  - Cricket (Male): 13 seats
+  - Cricket (Male): 12 seats
   - Volleyball (Male): 7 seats
   - Volleyball (Female): 12 seats
   - Basketball (Male): 5 seats
   - Basketball (Female): 7 seats
   - Football (Male): 7 seats
   - Faculty: 3 seats
-- **College Registration Validation**: Validates student registration numbers
+- **SRM College Registration Validation**: Validates student registration numbers
 - **Real-time Statistics**: Live updates of seat availability and team allocations
 - **Supabase Database**: Secure and scalable backend storage
 - **Modern UI**: Beautiful, responsive design with Tailwind CSS
@@ -39,7 +39,7 @@ A modern web application for booking bus seats for college sports teams. This sy
 
 ```bash
 git clone <repository-url>
-cd college-bus-booking-system
+cd srm-bus-booking-system
 ```
 
 ### 2. Install Dependencies
@@ -108,13 +108,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 ## Usage
 
-### For Students/Faculty
+### For SRM Students/Faculty
 
 1. **View Bus Layout**: The main page shows the 56-seater bus layout with color-coded seats (K row has 6 seats)
 2. **Select a Seat**: Click on any available (gray) seat to book it
 3. **Fill Booking Form**: 
    - Enter your full name
-   - Enter your college registration number (8-12 characters, letters and numbers)
+   - Enter your SRM college registration number (8-20 characters, letters and numbers)
    - Select your gender
    - Choose your sport team
 4. **Confirm Booking**: Click "Confirm Booking" to reserve your seat
@@ -148,7 +148,7 @@ The system automatically tracks team allocations and prevents overbooking:
 | id | UUID | Primary key |
 | seat_number | INTEGER | Seat number (1-56) |
 | student_name | TEXT | Full name of student/faculty |
-| college_reg_no | TEXT | College registration number |
+| college_reg_no | TEXT | SRM College registration number |
 | gender | TEXT | 'male' or 'female' |
 | sport | TEXT | Sport team or 'faculty' |
 | created_at | TIMESTAMP | Booking timestamp |

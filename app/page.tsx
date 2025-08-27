@@ -179,9 +179,9 @@ export default function Home() {
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
           <Bus className="h-12 w-12 text-blue-600 mr-3" />
-          <h1 className="text-4xl font-bold text-gray-800">College Bus Booking System</h1>
+          <h1 className="text-4xl font-bold text-gray-800">SRM Bus Booking System</h1>
         </div>
-        <p className="text-lg text-gray-600">Book your seat for the sports tournament</p>
+        <p className="text-lg text-gray-600">Book your seat for the sports tournament by Parth Singh</p>
       </div>
 
       {/* Statistics */}

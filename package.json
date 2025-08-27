@@ -1,7 +1,7 @@
 {
-  "name": "college-bus-booking-system",
+  "name": "srm-bus-booking-system",
   "version": "1.0.0",
-  "description": "Bus booking system for college sports teams",
+  "description": "SRM Bus booking system for college sports teams by Parth Singh",
   "main": "index.js",
   "scripts": {
     "dev": "next dev",
