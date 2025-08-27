@@ -1,0 +1,51 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
+}
+
+.bus-seat {
+  @apply w-12 h-12 rounded-lg border-2 border-gray-300 flex items-center justify-center text-sm font-semibold cursor-pointer transition-all duration-200 hover:scale-105 relative;
+}
+
+.bus-seat.available {
+  @apply bg-seat-available hover:bg-gray-300;
+}
+
+.bus-seat.booked-male {
+  @apply bg-seat-booked-male text-white cursor-not-allowed;
+}
+
+.bus-seat.booked-female {
+  @apply bg-seat-booked-female text-white cursor-not-allowed;
+}
+
+.bus-seat.selected {
+  @apply bg-seat-selected text-white;
+}
+
+.bus-seat.driver {
+  @apply bg-gray-800 text-white cursor-not-allowed;
+}

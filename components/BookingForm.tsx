@@ -1,0 +1,334 @@
+'use client'
+
+import { useState, useEffect } from 'react'
+import { X, User, GraduationCap, Trophy, AlertCircle } from 'lucide-react'
+import { supabase } from '@/lib/supabase'
+
+interface BookingFormProps {
+  seatNumber: number
+  onClose: () => void
+  onComplete: () => void
+}
+
+interface TeamLimits {
+  cricketMale: number
+  volleyballMale: number
+  volleyballFemale: number
+  basketballMale: number
+  basketballFemale: number
+  footballMale: number
+  faculty: number
+}
+
+export default function BookingForm({ seatNumber, onClose, onComplete }: BookingFormProps) {
+  const [formData, setFormData] = useState({
+    studentName: '',
+    collegeRegNo: '',
+    gender: 'male' as 'male' | 'female',
+    sport: 'cricket' as 'cricket' | 'volleyball' | 'basketball' | 'football' | 'faculty'
+  })
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  const [teamLimits, setTeamLimits] = useState<TeamLimits>({
+    cricketMale: 0,
+    volleyballMale: 0,
+    volleyballFemale: 0,
+    basketballMale: 0,
+    basketballFemale: 0,
+    footballMale: 0,
+    faculty: 0
+  })
+
+  useEffect(() => {
+    loadTeamLimits()
+  }, [])
+
+  const loadTeamLimits = async () => {
+    try {
+      const { data: bookings, error } = await supabase
+        .from('bookings')
+        .select('*')
+
+      if (error) {
+        console.error('Error loading team limits:', error)
+        return
+      }
+
+      const limits: TeamLimits = {
+        cricketMale: 0,
+        volleyballMale: 0,
+        volleyballFemale: 0,
+        basketballMale: 0,
+        basketballFemale: 0,
+        footballMale: 0,
+        faculty: 0
+      }
+
+      bookings?.forEach((booking: any) => {
+        switch (booking.sport) {
+          case 'cricket':
+            if (booking.gender === 'male') limits.cricketMale++
+            break
+          case 'volleyball':
+            if (booking.gender === 'male') limits.volleyballMale++
+            else limits.volleyballFemale++
+            break
+          case 'basketball':
+            if (booking.gender === 'male') limits.basketballMale++
+            else limits.basketballFemale++
+            break
+          case 'football':
+            if (booking.gender === 'male') limits.footballMale++
+            break
+          case 'faculty':
+            limits.faculty++
+            break
+        }
+      })
+
+      setTeamLimits(limits)
+    } catch (error) {
+      console.error('Error loading team limits:', error)
+    }
+  }
+
+  const validateForm = () => {
+    if (!formData.studentName.trim()) {
+      setError('Please enter your full name')
+      return false
+    }
+
+    if (!formData.collegeRegNo.trim()) {
+      setError('Please enter your college registration number')
+      return false
+    }
+
+    // Validate college registration number format (allow 8-20 alphanumeric e.g., RA2211026030016)
+    if (!/^[A-Za-z0-9]{8,20}$/.test(formData.collegeRegNo.trim())) {
+      setError('Please enter a valid college registration number (8-20 characters, letters and numbers only)')
+      return false
+    }
+
+    // Disallow female bookings in back row (seats 51-55)
+    if (formData.gender === 'female' && seatNumber >= 51) {
+      setError('Female bookings are not allowed in the back row (seats 51-55). Please pick a seat in rows 1-10.')
+      return false
+    }
+
+    // Check team limits
+    const maxLimits = {
+      cricketMale: 12,
+      volleyballMale: 7,
+      volleyballFemale: 12,
+      basketballMale: 5,
+      basketballFemale: 7,
+      footballMale: 7,
+      faculty: 3
+    }
+
+    const currentCount = teamLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0
+    const maxCount = maxLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0
+
+    if (currentCount >= maxCount) {
+      setError(`${formData.sport} team (${formData.gender}) is full. Please select another team.`)
+      return false
+    }
+
+    return true
+  }
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (!validateForm()) {
+      return
+    }
+
+    setLoading(true)
+
+    try {
+
+      // Check if seat is still available
+      const { data: existingBooking } = await supabase
+        .from('bookings')
+        .select('*')
+        .eq('seat_number', seatNumber)
+        .single()
+
+      if (existingBooking) {
+        setError('This seat has already been booked. Please select another seat.')
+        setLoading(false)
+        return
+      }
+
+      // No per-user restriction anymore
+
+      // Create booking
+      const { error } = await supabase
+        .from('bookings')
+        .insert({
+          seat_number: seatNumber,
+          student_name: formData.studentName.trim(),
+          college_reg_no: formData.collegeRegNo.trim().toUpperCase(),
+          gender: formData.gender,
+          sport: formData.sport
+        })
+
+      if (error) {
+        console.error('Error creating booking:', error)
+        const msg = String(error?.message || '')
+        const lower = msg.toLowerCase()
+        if (lower.includes('team limit exceeded')) {
+          setError('Selected team is full. Please choose another team.')
+        } else if (lower.includes('seat') && lower.includes('already booked')) {
+          setError('This seat has already been booked. Please select another seat.')
+        } else if (lower.includes('row-level security')) {
+          setError('Database security policy blocked the insert. Please run database/setup.sql policies in Supabase.')
+        } else {
+          setError(`Failed to create booking. Details: ${msg}`)
+        }
+        return
+      }
+
+      onComplete()
+    } catch (error) {
+      console.error('Error submitting booking:', error)
+      setError('An unexpected error occurred. Please try again.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const getTeamAvailability = (sport: string, gender: string) => {
+    const key = `${sport}${gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits
+    const current = teamLimits[key] || 0
+    const max = {
+      cricketMale: 12,
+      volleyballMale: 7,
+      volleyballFemale: 12,
+      basketballMale: 5,
+      basketballFemale: 7,
+      footballMale: 7,
+      faculty: 3
+    }[key] || 0
+
+    return { current, max, available: max - current }
+  }
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto">
+        <div className="p-6">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold text-gray-800">Book Seat {seatNumber}</h2>
+            <button
+              onClick={onClose}
+              className="text-gray-500 hover:text-gray-700 transition-colors"
+            >
+              <X className="h-6 w-6" />
+            </button>
+          </div>
+
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
+              <span className="text-red-700 text-sm">{error}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Student Name */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <User className="h-4 w-4 inline mr-1" />
+                Full Name
+              </label>
+              <input
+                type="text"
+                value={formData.studentName}
+                onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your full name"
+                required
+              />
+            </div>
+
+            {/* College Registration Number */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <GraduationCap className="h-4 w-4 inline mr-1" />
+                College Registration Number
+              </label>
+              <input
+                type="text"
+                value={formData.collegeRegNo}
+                onChange={(e) => setFormData({ ...formData, collegeRegNo: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your college reg. no."
+                required
+              />
+            </div>
+
+            {/* Gender */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+              <div className="flex space-x-6">
+                <label className="flex items-center gap-2 text-gray-900">
+                  <input
+                    type="radio"
+                    value="male"
+                    checked={formData.gender === 'male'}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as 'male' | 'female' })}
+                    className="accent-blue-600"
+                  />
+                  <span>Male</span>
+                </label>
+                <label className="flex items-center gap-2 text-gray-900">
+                  <input
+                    type="radio"
+                    value="female"
+                    checked={formData.gender === 'female'}
+                    onChange={(e) => setFormData({ ...formData, gender: e.target.value as 'male' | 'female' })}
+                    className="accent-pink-600"
+                  />
+                  <span>Female</span>
+                </label>
+              </div>
+            </div>
+
+            {/* Sport Team */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                <Trophy className="h-4 w-4 inline mr-1" />
+                Sport Team
+              </label>
+              <select
+                value={formData.sport}
+                onChange={(e) => setFormData({ ...formData, sport: e.target.value as any })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              >
+                <option value="cricket">Cricket (Male) - {getTeamAvailability('cricket', 'male').available}/12 available</option>
+                <option value="volleyball">Volleyball (Male) - {getTeamAvailability('volleyball', 'male').available}/7 available</option>
+                <option value="volleyball">Volleyball (Female) - {getTeamAvailability('volleyball', 'female').available}/12 available</option>
+                <option value="basketball">Basketball (Male) - {getTeamAvailability('basketball', 'male').available}/5 available</option>
+                <option value="basketball">Basketball (Female) - {getTeamAvailability('basketball', 'female').available}/7 available</option>
+                <option value="football">Football (Male) - {getTeamAvailability('football', 'male').available}/7 available</option>
+                <option value="faculty">Faculty - {getTeamAvailability('faculty', 'male').available}/3 available</option>
+              </select>
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? 'Booking...' : 'Confirm Booking'}
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  )
+}
