@@ -56,9 +56,13 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
         setFormData(prev => ({ ...prev, sport: 'volleyball' }))
       }
     } else {
-      if (formData.sport === 'volleyball' && formData.gender === 'female') {
-        setFormData(prev => ({ ...prev, sport: 'cricket' }))
+      // For male gender, volleyball and basketball are valid, so only reset if it's an invalid sport
+      if (formData.sport === 'volleyball' || formData.sport === 'basketball') {
+        // These sports are valid for both genders, so no need to change
+        return
       }
+      // For other cases, default to cricket
+      setFormData(prev => ({ ...prev, sport: 'cricket' }))
     }
   }, [formData.gender])
 
