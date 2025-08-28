@@ -266,16 +266,17 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       const max = 3
       return { current, max, available: max - current }
     }
-    const key = `${sport}${gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits
+    const key = `${sport}${gender === 'male' ? 'Male' : 'Female'}` as Exclude<keyof TeamLimits, 'faculty'>
     const current = teamLimits[key] || 0
-    const max = {
+    const maxMap: Record<Exclude<keyof TeamLimits, 'faculty'>, number> = {
       cricketMale: 12,
       volleyballMale: 7,
       volleyballFemale: 12,
       basketballMale: 5,
       basketballFemale: 7,
-      footballMale: 7
-    }[key] || 0
+      footballMale: 7,
+    }
+    const max = maxMap[key] || 0
 
     return { current, max, available: max - current }
   }
