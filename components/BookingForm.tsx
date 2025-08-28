@@ -138,20 +138,29 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       return false
     }
 
-    if (!formData.collegeRegNo.trim()) {
-      setError('Please enter your college registration number')
-      return false
-    }
+    // Registration number is required for students only (not for faculty)
+    if (formData.sport !== 'faculty') {
+      if (!formData.collegeRegNo.trim()) {
+        setError('Please enter your college registration number')
+        return false
+      }
 
-    // Validate college registration number format (allow 8-20 alphanumeric e.g., RA2211026030016)
-    if (!/^[A-Za-z0-9]{8,20}$/.test(formData.collegeRegNo.trim())) {
-      setError('Please enter a valid college registration number (8-20 characters, letters and numbers only)')
-      return false
+      // Validate college registration number format (allow 8-20 alphanumeric e.g., RA2211026030016)
+      if (!/^[A-Za-z0-9]{8,20}$/.test(formData.collegeRegNo.trim())) {
+        setError('Please enter a valid college registration number (8-20 characters, letters and numbers only)')
+        return false
+      }
     }
 
     // Disallow female bookings in back row (seats 51-55)
     if (formData.gender === 'female' && seatNumber >= 51) {
       setError('Female bookings are not allowed in the back row (seats 51-55). Please pick a seat in rows 1-10.')
+      return false
+    }
+
+    // Only faculty can book front row A1–A3 (seat numbers 1-3)
+    if (seatNumber >= 1 && seatNumber <= 3 && formData.sport !== 'faculty') {
+      setError('Front row seats A1–A3 are reserved for faculty only.')
       return false
     }
 
@@ -210,7 +219,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
         .insert({
           seat_number: seatNumber,
           student_name: formData.studentName.trim(),
-          college_reg_no: formData.collegeRegNo.trim().toUpperCase(),
+          college_reg_no: (formData.sport === 'faculty' ? 'FACULTY' : formData.collegeRegNo.trim().toUpperCase()),
           gender: formData.gender,
           sport: formData.sport
         })
@@ -300,7 +309,8 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
               />
             </div>
 
-            {/* College Registration Number */}
+            {/* College Registration Number (hidden for faculty) */}
+            {formData.sport !== 'faculty' && (
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 <GraduationCap className="h-4 w-4 inline mr-1" />
@@ -315,6 +325,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
                 required
               />
             </div>
+            )}
 
             {/* Gender */}
             <div>

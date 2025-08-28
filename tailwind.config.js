@@ -11,6 +11,7 @@ module.exports = {
         'seat-available': '#e5e7eb',
         'seat-booked-male': '#3b82f6',
         'seat-booked-female': '#ec4899',
+        'seat-booked-faculty': '#f97316',
         'seat-selected': '#10b981',
       },
     },

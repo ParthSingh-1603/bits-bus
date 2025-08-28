@@ -21,6 +21,9 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
     }
     
     if (seat?.is_booked) {
+      if (seat.booking?.sport === 'faculty') {
+        return 'bus-seat booked-faculty'
+      }
       return seat.booking?.gender === 'female' 
         ? 'bus-seat booked-female' 
         : 'bus-seat booked-male'

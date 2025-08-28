@@ -42,6 +42,10 @@ body {
   @apply bg-seat-booked-female text-white cursor-not-allowed;
 }
 
+.bus-seat.booked-faculty {
+  @apply bg-seat-booked-faculty text-white cursor-not-allowed;
+}
+
 .bus-seat.selected {
   @apply bg-seat-selected text-white;
 }

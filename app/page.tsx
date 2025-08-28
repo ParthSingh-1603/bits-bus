@@ -217,8 +217,8 @@ export default function Home() {
           <div className="flex items-center">
             <GraduationCap className="h-6 w-6 text-orange-600 mr-2" />
             <div>
-              <p className="text-sm text-gray-600">Faculty</p>
-              <p className="text-xl font-bold text-orange-600">{stats.faculty}/3</p>
+              <p className="text-sm text-gray-600">Faculty Available</p>
+              <p className="text-xl font-bold text-orange-600">{Math.max(0, 3 - stats.faculty)}/3</p>
             </div>
           </div>
         </div>
