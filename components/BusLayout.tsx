@@ -10,10 +10,23 @@ interface BusLayoutProps {
 }
 
 export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayoutProps) {
-  // 2 seats on the left, 3 on the right => 5 per row for A-J, 6 seats for K row (3+3)
-  const totalSeats = 56
-  const seatsPerRow = 5
-  const numRows = 11 // A through K
+  // Custom 54-seat layout without A row:
+  // B–I = 2(left)+0(middle)+3(right) → 8 rows × 5 = 40
+  // J, K = 3(left)+1(middle)+3(right) → 2 rows × 7 = 14
+  // Total = 54
+  const rowDefinitions: Array<{ label: string; left: number; middle: number; right: number }> = [
+    { label: 'A', left: 2, middle: 0, right: 3 },
+    { label: 'B', left: 2, middle: 0, right: 3 },
+    { label: 'C', left: 2, middle: 0, right: 3 },
+    { label: 'D', left: 2, middle: 0, right: 3 },
+    { label: 'E', left: 2, middle: 0, right: 3 },
+    { label: 'F', left: 2, middle: 0, right: 3 },
+    { label: 'G', left: 2, middle: 0, right: 3 },
+    { label: 'H', left: 2, middle: 0, right: 3 },
+    { label: 'I', left: 2, middle: 0, right: 3 },
+    { label: 'J', left: 3, middle: 1, right: 3 },
+  ]
+  const totalSeats = rowDefinitions.reduce((sum, r) => sum + r.left + r.middle + r.right, 0)
 
   const getSeatClass = (seat: Seat | undefined, seatNumber: number) => {
     if (seatNumber === selectedSeat) {
@@ -52,72 +65,90 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
           </div>
         </div>
 
-        {/* Passenger seats: 2 (left) + aisle + 3 (right) for A-J, 3+3 for K row */}
+        {/* Passenger seats per row definitions */}
         <div className="space-y-4">
-          {Array.from({ length: numRows }, (_, rowIdx) => {
-            const rowStart = rowIdx * seatsPerRow + 1
-            const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
-            const isKRow = rowLabel === 'K'
-            const leftSeats = isKRow ? 3 : 2
-            const rightSeats = 3
-            
-            return (
-              <div key={rowIdx} className="flex justify-center items-center">
-                {/* Row label */}
-                <div className="w-8 mr-2 text-right text-sm font-semibold text-gray-600 select-none">
-                  {rowLabel}
-                </div>
-                {/* Left block: 2 seats for A-J, 3 seats for K */}
-                <div className="flex gap-4">
-                  {Array.from({ length: leftSeats }, (_, i) => {
-                    const seatNumber = rowStart + i
-                    if (seatNumber > totalSeats) return null
-                    const seat = seats?.[seatNumber - 1]
-                    const seatLabel = `${rowLabel}${i + 1}`
-                    return (
-                      <div
-                        key={seatNumber}
-                        className={getSeatClass(seat, seatNumber) + ' relative'}
-                        onClick={() => onSeatClick(seatNumber)}
-                        title={getSeatTooltip(seat, seatNumber)}
-                      >
-                        <Armchair className="h-6 w-6" />
-                        <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
-                          {seatLabel}
-                        </span>
-                      </div>
-                    )
-                  })}
-                </div>
+          {(() => {
+            let runningSeatNumber = 0
+            return rowDefinitions.map((row, rowIdx) => {
+              const { label, left, middle, right } = row
+              return (
+                <div key={label} className="flex justify-center items-center">
+                  {/* Row label */}
+                  <div className="w-8 mr-2 text-right text-sm font-semibold text-gray-600 select-none">
+                    {label}
+                  </div>
 
-                {/* Aisle spacer */}
-                <div className="w-10" />
+                  {/* Left block */}
+                  <div className="flex gap-4">
+                    {Array.from({ length: left }, (_, i) => {
+                      const seatNumber = ++runningSeatNumber
+                      const seat = seats?.[seatNumber - 1]
+                      const seatLabel = `${label}${i + 1}`
+                      return (
+                        <div
+                          key={seatNumber}
+                          className={getSeatClass(seat, seatNumber) + ' relative'}
+                          onClick={() => onSeatClick(seatNumber)}
+                          title={getSeatTooltip(seat, seatNumber)}
+                        >
+                          <Armchair className="h-6 w-6" />
+                          <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
+                            {seatLabel}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
 
-                {/* Right block: 3 seats */}
-                <div className="flex gap-4">
-                  {Array.from({ length: rightSeats }, (_, i) => {
-                    const seatNumber = rowStart + leftSeats + i
-                    if (seatNumber > totalSeats) return null
-                    const seat = seats?.[seatNumber - 1]
-                    const seatLabel = `${rowLabel}${leftSeats + i + 1}`
-                    return (
-                      <div
-                        key={seatNumber}
-                        className={getSeatClass(seat, seatNumber) + ' relative'}
-                        onClick={() => onSeatClick(seatNumber)}
-                        title={getSeatTooltip(seat, seatNumber)}
-                      >
-                        <Armchair className="h-6 w-6" />
-                        <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
-                          {seatLabel}
-                        </span>
-                      </div>
-                    )
-                  })}
+                  {/* Aisle with optional middle seat */}
+                  <div className="w-10 mx-2 flex justify-center">
+                    {middle === 1 && (
+                      (() => {
+                        const seatNumber = ++runningSeatNumber
+                        const seat = seats?.[seatNumber - 1]
+                        const seatLabel = `${label}${left + 1}`
+                        return (
+                          <div
+                            key={seatNumber}
+                            className={getSeatClass(seat, seatNumber) + ' relative'}
+                            onClick={() => onSeatClick(seatNumber)}
+                            title={getSeatTooltip(seat, seatNumber)}
+                          >
+                            <Armchair className="h-6 w-6" />
+                            <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
+                              {seatLabel}
+                            </span>
+                          </div>
+                        )
+                      })()
+                    )}
+                  </div>
+
+                  {/* Right block */}
+                  <div className="flex gap-4">
+                    {Array.from({ length: right }, (_, i) => {
+                      const seatNumber = ++runningSeatNumber
+                      const seat = seats?.[seatNumber - 1]
+                      const seatLabel = `${label}${left + middle + i + 1}`
+                      return (
+                        <div
+                          key={seatNumber}
+                          className={getSeatClass(seat, seatNumber) + ' relative'}
+                          onClick={() => onSeatClick(seatNumber)}
+                          title={getSeatTooltip(seat, seatNumber)}
+                        >
+                          <Armchair className="h-6 w-6" />
+                          <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
+                            {seatLabel}
+                          </span>
+                        </div>
+                      )
+                    })}
+                  </div>
                 </div>
-              </div>
-            )
-          })}
+              )
+            })
+          })()}
         </div>
       </div>
 

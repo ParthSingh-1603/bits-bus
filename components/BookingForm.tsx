@@ -152,9 +152,9 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       }
     }
 
-    // Disallow female bookings in back row (seats 51-55)
-    if (formData.gender === 'female' && seatNumber >= 51) {
-      setError('Female bookings are not allowed in the back row (seats 51-55). Please pick a seat in rows 1-10.')
+    // Disallow female bookings in rows H–J (seat numbers 36 and above in current layout)
+    if (formData.gender === 'female' && seatNumber >= 36) {
+      setError('Female bookings are not allowed in rows H–J. Please pick a seat in rows A–G.')
       return false
     }
 
@@ -175,8 +175,13 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       faculty: 3
     }
 
-    const currentCount = teamLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0
-    const maxCount = maxLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0
+    const isFaculty = formData.sport === 'faculty'
+    const currentCount = isFaculty
+      ? (teamLimits.faculty || 0)
+      : (teamLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0)
+    const maxCount = isFaculty
+      ? 3
+      : (maxLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0)
 
     if (currentCount >= maxCount) {
       setError(`${formData.sport} team (${formData.gender}) is full. Please select another team.`)
@@ -256,6 +261,11 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
   }
 
   const getTeamAvailability = (sport: string, gender: string) => {
+    if (sport === 'faculty') {
+      const current = teamLimits.faculty || 0
+      const max = 3
+      return { current, max, available: max - current }
+    }
     const key = `${sport}${gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits
     const current = teamLimits[key] || 0
     const max = {
@@ -264,8 +274,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       volleyballFemale: 12,
       basketballMale: 5,
       basketballFemale: 7,
-      footballMale: 7,
-      faculty: 3
+      footballMale: 7
     }[key] || 0
 
     return { current, max, available: max - current }

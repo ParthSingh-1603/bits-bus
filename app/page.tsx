@@ -13,9 +13,9 @@ export default function Home() {
   const [showBookingForm, setShowBookingForm] = useState(false)
   const [loading, setLoading] = useState(true)
   const [stats, setStats] = useState({
-    totalSeats: 56,
+    totalSeats: 54,
     bookedSeats: 0,
-    availableSeats: 56,
+    availableSeats: 54,
     cricketMale: 0,
     volleyballMale: 0,
     volleyballFemale: 0,
@@ -34,7 +34,7 @@ export default function Home() {
       setLoading(true)
       
       // Initialize seats array
-      const seatsArray: Seat[] = Array.from({ length: 56 }, (_, i) => ({
+      const seatsArray: Seat[] = Array.from({ length: 54 }, (_, i) => ({
         seat_number: i + 1,
         is_booked: false,
       }))
@@ -73,9 +73,9 @@ export default function Home() {
 
   const calculateStats = (seatsArray: Seat[]) => {
     const stats = {
-      totalSeats: 56,
+      totalSeats: 54,
       bookedSeats: 0,
-      availableSeats: 56,
+      availableSeats: 54,
       cricketMale: 0,
       volleyballMale: 0,
       volleyballFemale: 0,
@@ -137,15 +137,12 @@ export default function Home() {
     const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
     const seatInRow = seatNumber - (rowIdx * 5)
     
-    // Handle K row which has 6 seats (3+3)
+    // K row with 6 seats (3+3) skips the middle label (K4)
     if (rowLabel === 'K') {
-      if (seatInRow <= 3) {
-        return `K${seatInRow}`
-      } else {
-        return `K${seatInRow + 1}` // Skip the middle seat numbering
-      }
+      if (seatInRow <= 3) return `K${seatInRow}`
+      return `K${seatInRow + 1}`
     }
-    
+
     return `${rowLabel}${seatInRow}`
   }
 
@@ -160,6 +157,59 @@ export default function Home() {
     setShowBookingForm(false)
     setBookingConfirmation(bookingDetails)
     loadSeats() // Reload seats to show updated state
+  }
+
+  const handleDownloadTicket = () => {
+    if (!bookingConfirmation) return
+    const { studentName, seatNumber, sport, gender, seatLabel } = bookingConfirmation
+
+    const canvas = document.createElement('canvas')
+    const width = 900
+    const height = 500
+    canvas.width = width
+    canvas.height = height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+
+    ctx.fillStyle = '#ffffff'
+    ctx.fillRect(0, 0, width, height)
+    ctx.fillStyle = '#1f2937'
+    ctx.font = 'bold 32px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial'
+    ctx.fillText('SRM Bus Booking - Ticket', 30, 60)
+    ctx.strokeStyle = '#e5e7eb'
+    ctx.lineWidth = 2
+    ctx.beginPath()
+    ctx.moveTo(30, 80)
+    ctx.lineTo(width - 30, 80)
+    ctx.stroke()
+
+    ctx.font = '600 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial'
+    ctx.fillText(`Name:`, 30, 130)
+    ctx.fillText(`Seat:`, 30, 170)
+    ctx.fillText(`Sport Team:`, 30, 210)
+    ctx.fillText(`Gender:`, 30, 250)
+    ctx.fillText(`Seat Label:`, 30, 290)
+    ctx.fillText(`Issued:`, 30, 330)
+
+    ctx.font = '400 22px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial'
+    ctx.fillText(studentName, 180, 130)
+    ctx.fillText(`#${seatNumber}`, 180, 170)
+    ctx.fillText(String(sport).toUpperCase(), 180, 210)
+    ctx.fillText(String(gender).toUpperCase(), 180, 250)
+    ctx.fillText(seatLabel, 180, 290)
+    ctx.fillText(new Date().toLocaleString(), 180, 330)
+
+    ctx.font = 'italic 18px Inter, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial'
+    ctx.fillStyle = '#6b7280'
+    ctx.fillText('Please present this ticket during boarding.', 30, height - 40)
+
+    const dataUrl = canvas.toDataURL('image/png')
+    const link = document.createElement('a')
+    link.href = dataUrl
+    link.download = `ticket-seat-${seatNumber}.png`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
   }
 
   if (loading) {
@@ -318,6 +368,17 @@ export default function Home() {
                 </div>
               </div>
             </div>
+
+            <div className="mb-3 p-3 bg-yellow-50 border border-yellow-200 rounded-lg text-sm text-yellow-800">
+              Please take a screenshot of this confirmation for verification at boarding.
+            </div>
+
+            <button
+              onClick={handleDownloadTicket}
+              className="w-full mb-3 bg-white text-blue-600 border border-blue-600 py-3 px-4 rounded-lg hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            >
+              Download Ticket (PNG)
+            </button>
 
             <button
               onClick={() => setBookingConfirmation(null)}
