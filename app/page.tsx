@@ -132,19 +132,7 @@ export default function Home() {
     seatLabel: string;
   } | null>(null)
 
-  const getSeatLabel = (seatNumber: number) => {
-    const rowIdx = Math.floor((seatNumber - 1) / 5)
-    const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
-    const seatInRow = seatNumber - (rowIdx * 5)
-    
-    // K row with 6 seats (3+3) skips the middle label (K4)
-    if (rowLabel === 'K') {
-      if (seatInRow <= 3) return `K${seatInRow}`
-      return `K${seatInRow + 1}`
-    }
-
-    return `${rowLabel}${seatInRow}`
-  }
+  // Removed unused getSeatLabel function - seat labels are now handled in BusLayout component
 
   const handleBookingComplete = (bookingDetails: {
     studentName: string;

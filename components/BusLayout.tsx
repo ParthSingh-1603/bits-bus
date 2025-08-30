@@ -15,7 +15,7 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
   // J, K = 3(left)+1(middle)+3(right) → 2 rows × 7 = 14
   // Total = 54
   const rowDefinitions: Array<{ label: string; left: number; middle: number; right: number }> = [
-    { label: 'A', left: 2, middle: 0, right: 3 },
+    { label: 'A', left: 0, middle: 0, right: 3 }, // Front row: 01, 02, 03
     { label: 'B', left: 2, middle: 0, right: 3 },
     { label: 'C', left: 2, middle: 0, right: 3 },
     { label: 'D', left: 2, middle: 0, right: 3 },
@@ -24,9 +24,10 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
     { label: 'G', left: 2, middle: 0, right: 3 },
     { label: 'H', left: 2, middle: 0, right: 3 },
     { label: 'I', left: 2, middle: 0, right: 3 },
-    { label: 'J', left: 3, middle: 1, right: 3 },
+    { label: 'J', left: 2, middle: 0, right: 3 },
+    { label: 'K', left: 2, middle: 0, right: 4 }, // Last row: 4 seats on right
   ]
-  const totalSeats = rowDefinitions.reduce((sum, r) => sum + r.left + r.middle + r.right, 0)
+  // Total seats calculated dynamically from row definitions
 
   const getSeatClass = (seat: Seat | undefined, seatNumber: number) => {
     if (seatNumber === selectedSeat) {
@@ -69,7 +70,7 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
         <div className="space-y-4">
           {(() => {
             let runningSeatNumber = 0
-            return rowDefinitions.map((row, rowIdx) => {
+            return rowDefinitions.map((row) => {
               const { label, left, middle, right } = row
               return (
                 <div key={label} className="flex justify-center items-center">
@@ -80,10 +81,11 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
 
                   {/* Left block */}
                   <div className="flex gap-4">
-                    {Array.from({ length: left }, (_, i) => {
+                    {Array.from({ length: left }, () => {
                       const seatNumber = ++runningSeatNumber
                       const seat = seats?.[seatNumber - 1]
-                      const seatLabel = `${label}${i + 1}`
+                      // Use seat number directly for labeling (01, 02, 03, etc.)
+                      const seatLabel = seatNumber.toString().padStart(2, '0')
                       return (
                         <div
                           key={seatNumber}
@@ -106,7 +108,8 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
                       (() => {
                         const seatNumber = ++runningSeatNumber
                         const seat = seats?.[seatNumber - 1]
-                        const seatLabel = `${label}${left + 1}`
+                        // Use seat number directly for labeling (01, 02, 03, etc.)
+                        const seatLabel = seatNumber.toString().padStart(2, '0')
                         return (
                           <div
                             key={seatNumber}
@@ -126,10 +129,11 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
 
                   {/* Right block */}
                   <div className="flex gap-4">
-                    {Array.from({ length: right }, (_, i) => {
+                    {Array.from({ length: right }, () => {
                       const seatNumber = ++runningSeatNumber
                       const seat = seats?.[seatNumber - 1]
-                      const seatLabel = `${label}${left + middle + i + 1}`
+                      // Use seat number directly for labeling (01, 02, 03, etc.)
+                      const seatLabel = seatNumber.toString().padStart(2, '0')
                       return (
                         <div
                           key={seatNumber}
