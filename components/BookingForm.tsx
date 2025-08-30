@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { X, User, GraduationCap, Trophy, AlertCircle } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { supabase, Booking } from '@/lib/supabase'
 
 interface BookingFormProps {
   seatNumber: number
@@ -263,12 +263,11 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
     const key = `${sport}${gender === 'male' ? 'Male' : 'Female'}` as Exclude<keyof TeamLimits, 'faculty'>
     const current = teamLimits[key] || 0
     const maxMap: Record<Exclude<keyof TeamLimits, 'faculty'>, number> = {
-      cricketMale: 12,
-      volleyballMale: 7,
+      cricketMale: 14,
+      volleyballMale: 11,
       volleyballFemale: 12,
-      basketballMale: 5,
+      basketballMale: 6,
       basketballFemale: 7,
-      footballMale: 7,
     }
     const max = maxMap[key] || 0
 
