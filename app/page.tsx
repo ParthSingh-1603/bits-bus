@@ -21,7 +21,6 @@ export default function Home() {
     volleyballFemale: 0,
     basketballMale: 0,
     basketballFemale: 0,
-    footballMale: 0,
     faculty: 0,
   })
 
@@ -81,7 +80,6 @@ export default function Home() {
       volleyballFemale: 0,
       basketballMale: 0,
       basketballFemale: 0,
-      footballMale: 0,
       faculty: 0,
     }
 
@@ -102,9 +100,7 @@ export default function Home() {
             if (seat.booking.gender === 'male') stats.basketballMale++
             else stats.basketballFemale++
             break
-          case 'football':
-            if (seat.booking.gender === 'male') stats.footballMale++
-            break
+
           case 'faculty':
             stats.faculty++
             break
@@ -277,11 +273,11 @@ export default function Home() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="text-center p-3 bg-blue-50 rounded-lg">
             <p className="font-semibold text-blue-800">Cricket (Male)</p>
-            <p className="text-2xl font-bold text-blue-600">{stats.cricketMale}/12</p>
+            <p className="text-2xl font-bold text-blue-600">{stats.cricketMale}/14</p>
           </div>
           <div className="text-center p-3 bg-green-50 rounded-lg">
             <p className="font-semibold text-green-800">Volleyball (Male)</p>
-            <p className="text-2xl font-bold text-green-600">{stats.volleyballMale}/7</p>
+            <p className="text-2xl font-bold text-green-600">{stats.volleyballMale}/11</p>
           </div>
           <div className="text-center p-3 bg-pink-50 rounded-lg">
             <p className="font-semibold text-pink-800">Volleyball (Female)</p>
@@ -289,15 +285,11 @@ export default function Home() {
           </div>
           <div className="text-center p-3 bg-orange-50 rounded-lg">
             <p className="font-semibold text-orange-800">Basketball (Male)</p>
-            <p className="text-2xl font-bold text-orange-600">{stats.basketballMale}/5</p>
+            <p className="text-2xl font-bold text-orange-600">{stats.basketballMale}/6</p>
           </div>
           <div className="text-center p-3 bg-purple-50 rounded-lg">
             <p className="font-semibold text-purple-800">Basketball (Female)</p>
             <p className="text-2xl font-bold text-purple-600">{stats.basketballFemale}/7</p>
-          </div>
-          <div className="text-center p-3 bg-red-50 rounded-lg">
-            <p className="font-semibold text-red-800">Football (Male)</p>
-            <p className="text-2xl font-bold text-red-600">{stats.footballMale}/7</p>
           </div>
         </div>
       </div>
