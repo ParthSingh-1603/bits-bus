@@ -12,7 +12,7 @@ export interface Booking {
   student_name: string
   college_reg_no: string
   gender: 'male' | 'female'
-  sport: 'cricket' | 'volleyball' | 'basketball' | 'faculty'
+  sport: 'cricket' | 'volleyball' | 'basketball' | 'faculty' | '8ballpool'
   created_at: string
 }
 

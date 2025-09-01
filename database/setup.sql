@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   student_name TEXT NOT NULL,
   college_reg_no TEXT NOT NULL,
   gender TEXT NOT NULL CHECK (gender IN ('male', 'female')),
-  sport TEXT NOT NULL CHECK (sport IN ('cricket', 'volleyball', 'basketball', 'football', 'faculty')),
+  sport TEXT NOT NULL CHECK (sport IN ('cricket', 'volleyball', 'basketball', 'football', 'faculty', '8ballpool')),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
@@ -49,12 +49,13 @@ BEGIN
   
   -- Set max limits based on sport and gender
   CASE 
-    WHEN NEW.sport = 'cricket' AND NEW.gender = 'male' THEN max_limit := 12;
-    WHEN NEW.sport = 'volleyball' AND NEW.gender = 'male' THEN max_limit := 7;
+    WHEN NEW.sport = 'cricket' AND NEW.gender = 'male' THEN max_limit := 14;
+    WHEN NEW.sport = 'volleyball' AND NEW.gender = 'male' THEN max_limit := 11;
     WHEN NEW.sport = 'volleyball' AND NEW.gender = 'female' THEN max_limit := 12;
     WHEN NEW.sport = 'basketball' AND NEW.gender = 'male' THEN max_limit := 5;
     WHEN NEW.sport = 'basketball' AND NEW.gender = 'female' THEN max_limit := 7;
     WHEN NEW.sport = 'football' AND NEW.gender = 'male' THEN max_limit := 7;
+    WHEN NEW.sport = '8ballpool' THEN max_limit := 1;
     WHEN NEW.sport = 'faculty' THEN max_limit := 3;
     ELSE max_limit := 0;
   END CASE;
@@ -112,12 +113,13 @@ SELECT
   gender,
   COUNT(*) as current_count,
   CASE 
-    WHEN sport = 'cricket' AND gender = 'male' THEN 12
-    WHEN sport = 'volleyball' AND gender = 'male' THEN 7
+    WHEN sport = 'cricket' AND gender = 'male' THEN 14
+    WHEN sport = 'volleyball' AND gender = 'male' THEN 11
     WHEN sport = 'volleyball' AND gender = 'female' THEN 12
     WHEN sport = 'basketball' AND gender = 'male' THEN 5
     WHEN sport = 'basketball' AND gender = 'female' THEN 7
     WHEN sport = 'football' AND gender = 'male' THEN 7
+    WHEN sport = '8ballpool' THEN 1
     WHEN sport = 'faculty' THEN 3
     ELSE 0
   END as max_limit

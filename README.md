@@ -7,12 +7,13 @@ A modern web application for booking bus seats for SRM college sports teams. Thi
 - **56-Seater Bus Layout**: Visual representation of bus seats with interactive booking (K row has 6 seats)
 - **Gender-Based Booking**: Separate tracking for male and female students with pink seats for females
 - **Sports Team Allocations**:
-  - Cricket (Male): 12 seats
-  - Volleyball (Male): 7 seats
+  - Cricket (Male): 14 seats
+- Volleyball (Male): 11 seats
   - Volleyball (Female): 12 seats
   - Basketball (Male): 5 seats
   - Basketball (Female): 7 seats
   - Football (Male): 7 seats
+  - 8 Ball Pool: 1 seat
   - Faculty: 3 seats
 - **SRM College Registration Validation**: Validates student registration numbers
 - **Real-time Statistics**: Live updates of seat availability and team allocations
@@ -131,12 +132,13 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 
 The system automatically tracks team allocations and prevents overbooking:
 
-- **Cricket (Male)**: Maximum 13 students
-- **Volleyball (Male)**: Maximum 7 students
+- **Cricket (Male)**: Maximum 14 students
+- **Volleyball (Male)**: Maximum 11 students
 - **Volleyball (Female)**: Maximum 12 students
 - **Basketball (Male)**: Maximum 5 students
 - **Basketball (Female)**: Maximum 7 students
 - **Football (Male)**: Maximum 7 students
+- **8 Ball Pool**: Maximum 1 student
 - **Faculty**: Maximum 3 members
 
 ## Database Schema

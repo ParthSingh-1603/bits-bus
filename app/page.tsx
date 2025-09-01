@@ -22,6 +22,7 @@ export default function Home() {
     basketballMale: 0,
     basketballFemale: 0,
     faculty: 0,
+    eightBallPool: 0,
   })
 
   useEffect(() => {
@@ -81,6 +82,7 @@ export default function Home() {
       basketballMale: 0,
       basketballFemale: 0,
       faculty: 0,
+      eightBallPool: 0,
     }
 
     seatsArray.forEach(seat => {
@@ -100,7 +102,9 @@ export default function Home() {
             if (seat.booking.gender === 'male') stats.basketballMale++
             else stats.basketballFemale++
             break
-
+          case '8ballpool':
+            stats.eightBallPool++
+            break
           case 'faculty':
             stats.faculty++
             break
@@ -290,6 +294,10 @@ export default function Home() {
           <div className="text-center p-3 bg-purple-50 rounded-lg">
             <p className="font-semibold text-purple-800">Basketball (Female)</p>
             <p className="text-2xl font-bold text-purple-600">{stats.basketballFemale}/7</p>
+          </div>
+          <div className="text-center p-3 bg-indigo-50 rounded-lg">
+            <p className="font-semibold text-indigo-800">8 Ball Pool</p>
+            <p className="text-2xl font-bold text-indigo-600">{stats.eightBallPool}/1</p>
           </div>
         </div>
       </div>
