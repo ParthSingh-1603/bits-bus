@@ -41,7 +41,8 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
     volleyballFemale: 0,
     basketballMale: 0,
     basketballFemale: 0,
-    faculty: 0
+    faculty: 0,
+    eightBallPool: 0
   })
 
   useEffect(() => {
