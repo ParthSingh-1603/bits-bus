@@ -67,20 +67,35 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
   }, [formData.gender])
 
   const getSeatLabel = (seatNumber: number) => {
-    const rowIdx = Math.floor((seatNumber - 1) / 5)
-    const rowLabel = String.fromCharCode(65 + rowIdx) // A, B, C...
-    const seatInRow = seatNumber - (rowIdx * 5)
-    
-    // Handle K row which has 6 seats (3+3)
-    if (rowLabel === 'K') {
-      if (seatInRow <= 3) {
-        return `K${seatInRow}`
-      } else {
-        return `K${seatInRow + 1}` // Skip the middle seat numbering
+    // Mirror BusLayout row definitions to compute RowLetter+index labels
+    const rowDefinitions: Array<{ label: string; left: number; middle: number; right: number }> = [
+      { label: 'A', left: 0, middle: 0, right: 3 },
+      { label: 'B', left: 2, middle: 0, right: 3 },
+      { label: 'C', left: 2, middle: 0, right: 3 },
+      { label: 'D', left: 2, middle: 0, right: 3 },
+      { label: 'E', left: 2, middle: 0, right: 3 },
+      { label: 'F', left: 2, middle: 0, right: 3 },
+      { label: 'G', left: 2, middle: 0, right: 3 },
+      { label: 'H', left: 2, middle: 0, right: 3 },
+      { label: 'I', left: 2, middle: 0, right: 3 },
+      { label: 'J', left: 2, middle: 0, right: 3 },
+      { label: 'K', left: 2, middle: 0, right: 4 },
+    ]
+
+    let runningSeatNumber = 0
+    for (const row of rowDefinitions) {
+      const seatsInRow = row.left + row.middle + row.right
+      if (seatNumber > runningSeatNumber + seatsInRow) {
+        runningSeatNumber += seatsInRow
+        continue
       }
+      // Seat is in this row
+      const indexInRow = seatNumber - runningSeatNumber
+      return `${row.label}${indexInRow}`
     }
-    
-    return `${rowLabel}${seatInRow}`
+
+    // Fallback to numeric label if out of bounds
+    return String(seatNumber)
   }
 
   const loadTeamLimits = async () => {

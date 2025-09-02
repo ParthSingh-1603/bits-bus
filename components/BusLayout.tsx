@@ -72,6 +72,7 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
             let runningSeatNumber = 0
             return rowDefinitions.map((row) => {
               const { label, left, middle, right } = row
+              let rowSeatIndex = 0
               return (
                 <div key={label} className="flex justify-center items-center">
                   {/* Row label */}
@@ -84,14 +85,13 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
                     {Array.from({ length: left }, () => {
                       const seatNumber = ++runningSeatNumber
                       const seat = seats?.[seatNumber - 1]
-                      // Use seat number directly for labeling (01, 02, 03, etc.)
-                      const seatLabel = seatNumber.toString().padStart(2, '0')
+                      const seatLabel = `${label}${++rowSeatIndex}`
                       return (
                         <div
                           key={seatNumber}
                           className={getSeatClass(seat, seatNumber) + ' relative'}
                           onClick={() => onSeatClick(seatNumber)}
-                          title={getSeatTooltip(seat, seatNumber)}
+                          title={seat?.is_booked ? `${seat.booking?.student_name} (${seat.booking?.sport})` : `Seat ${seatLabel} - Available`}
                         >
                           <Armchair className="h-6 w-6" />
                           <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
@@ -108,14 +108,13 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
                       (() => {
                         const seatNumber = ++runningSeatNumber
                         const seat = seats?.[seatNumber - 1]
-                        // Use seat number directly for labeling (01, 02, 03, etc.)
-                        const seatLabel = seatNumber.toString().padStart(2, '0')
+                        const seatLabel = `${label}${++rowSeatIndex}`
                         return (
                           <div
                             key={seatNumber}
                             className={getSeatClass(seat, seatNumber) + ' relative'}
                             onClick={() => onSeatClick(seatNumber)}
-                            title={getSeatTooltip(seat, seatNumber)}
+                            title={seat?.is_booked ? `${seat.booking?.student_name} (${seat.booking?.sport})` : `Seat ${seatLabel} - Available`}
                           >
                             <Armchair className="h-6 w-6" />
                             <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
@@ -132,14 +131,13 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
                     {Array.from({ length: right }, () => {
                       const seatNumber = ++runningSeatNumber
                       const seat = seats?.[seatNumber - 1]
-                      // Use seat number directly for labeling (01, 02, 03, etc.)
-                      const seatLabel = seatNumber.toString().padStart(2, '0')
+                      const seatLabel = `${label}${++rowSeatIndex}`
                       return (
                         <div
                           key={seatNumber}
                           className={getSeatClass(seat, seatNumber) + ' relative'}
                           onClick={() => onSeatClick(seatNumber)}
-                          title={getSeatTooltip(seat, seatNumber)}
+                          title={seat?.is_booked ? `${seat.booking?.student_name} (${seat.booking?.sport})` : `Seat ${seatLabel} - Available`}
                         >
                           <Armchair className="h-6 w-6" />
                           <span className="absolute bottom-1 right-1 text-[10px] font-bold bg-white/80 text-gray-800 px-1 rounded">
