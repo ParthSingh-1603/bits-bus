@@ -173,12 +173,6 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       return false
     }
 
-    // Only faculty can book front row A1–A3 (seat numbers 1-3)
-    if (seatNumber >= 1 && seatNumber <= 3 && formData.sport !== 'faculty') {
-      setError('Front row seats A1–A3 are reserved for faculty only.')
-      return false
-    }
-
     // Check team limits
     const maxLimits = {
       cricketMale: 14,
