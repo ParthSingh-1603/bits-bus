@@ -296,8 +296,8 @@ export default function Home() {
             <p className="text-2xl font-bold text-purple-600">{stats.basketballFemale}/8</p>
           </div>
           <div className="text-center p-3 bg-indigo-50 rounded-lg">
-            <p className="font-semibold text-indigo-800">8 Ball Pool</p>
-            <p className="text-2xl font-bold text-indigo-600">{stats.eightBallPool}/1</p>
+            <p className="font-semibold text-indigo-800">8 Ball Pool Available</p>
+            <p className="text-2xl font-bold text-indigo-600">{Math.max(0, 1 - stats.eightBallPool)}/1</p>
           </div>
         </div>
       </div>
