@@ -176,12 +176,24 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
     }
 
     const isFaculty = formData.sport === 'faculty'
+
+    // Special-case non-gendered sports like 8ballpool
+    if (formData.sport === '8ballpool') {
+      const current = teamLimits.eightBallPool || 0
+      const max = 1
+      if (current >= max) {
+        setError('8 Ball Pool is full. Please select another team.')
+        return false
+      }
+      return true
+    }
+
     const currentCount = isFaculty
       ? (teamLimits.faculty || 0)
       : (teamLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0)
     const maxCount = isFaculty
       ? 3
-      : (maxLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof TeamLimits] || 0)
+      : (maxLimits[`${formData.sport}${formData.gender === 'male' ? 'Male' : 'Female'}` as keyof typeof maxLimits] || 0)
 
     if (currentCount >= maxCount) {
       setError(`${formData.sport} team (${formData.gender}) is full. Please select another team.`)
