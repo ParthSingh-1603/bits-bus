@@ -53,7 +53,7 @@ BEGIN
     WHEN NEW.sport = 'volleyball' AND NEW.gender = 'male' THEN max_limit := 11;
     WHEN NEW.sport = 'volleyball' AND NEW.gender = 'female' THEN max_limit := 12;
     WHEN NEW.sport = 'basketball' AND NEW.gender = 'male' THEN max_limit := 5;
-    WHEN NEW.sport = 'basketball' AND NEW.gender = 'female' THEN max_limit := 7;
+    WHEN NEW.sport = 'basketball' AND NEW.gender = 'female' THEN max_limit := 8;
     WHEN NEW.sport = 'football' AND NEW.gender = 'male' THEN max_limit := 7;
     WHEN NEW.sport = '8ballpool' THEN max_limit := 1;
     WHEN NEW.sport = 'faculty' THEN max_limit := 3;
@@ -117,7 +117,7 @@ SELECT
     WHEN sport = 'volleyball' AND gender = 'male' THEN 11
     WHEN sport = 'volleyball' AND gender = 'female' THEN 12
     WHEN sport = 'basketball' AND gender = 'male' THEN 5
-    WHEN sport = 'basketball' AND gender = 'female' THEN 7
+    WHEN sport = 'basketball' AND gender = 'female' THEN 8
     WHEN sport = 'football' AND gender = 'male' THEN 7
     WHEN sport = '8ballpool' THEN 1
     WHEN sport = 'faculty' THEN 3

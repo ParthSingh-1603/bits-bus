@@ -289,11 +289,11 @@ export default function Home() {
           </div>
           <div className="text-center p-3 bg-orange-50 rounded-lg">
             <p className="font-semibold text-orange-800">Basketball (Male)</p>
-            <p className="text-2xl font-bold text-orange-600">{stats.basketballMale}/6</p>
+            <p className="text-2xl font-bold text-orange-600">{stats.basketballMale}/5</p>
           </div>
           <div className="text-center p-3 bg-purple-50 rounded-lg">
             <p className="font-semibold text-purple-800">Basketball (Female)</p>
-            <p className="text-2xl font-bold text-purple-600">{stats.basketballFemale}/7</p>
+            <p className="text-2xl font-bold text-purple-600">{stats.basketballFemale}/8</p>
           </div>
           <div className="text-center p-3 bg-indigo-50 rounded-lg">
             <p className="font-semibold text-indigo-800">8 Ball Pool</p>

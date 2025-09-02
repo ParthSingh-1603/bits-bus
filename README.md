@@ -11,7 +11,7 @@ A modern web application for booking bus seats for SRM college sports teams. Thi
 - Volleyball (Male): 11 seats
   - Volleyball (Female): 12 seats
   - Basketball (Male): 5 seats
-  - Basketball (Female): 7 seats
+  - Basketball (Female): 8 seats
   - Football (Male): 7 seats
   - 8 Ball Pool: 1 seat
   - Faculty: 3 seats
@@ -136,7 +136,7 @@ The system automatically tracks team allocations and prevents overbooking:
 - **Volleyball (Male)**: Maximum 11 students
 - **Volleyball (Female)**: Maximum 12 students
 - **Basketball (Male)**: Maximum 5 students
-- **Basketball (Female)**: Maximum 7 students
+- **Basketball (Female)**: Maximum 8 students
 - **Football (Male)**: Maximum 7 students
 - **8 Ball Pool**: Maximum 1 student
 - **Faculty**: Maximum 3 members

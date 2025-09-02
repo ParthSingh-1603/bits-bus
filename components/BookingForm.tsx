@@ -170,7 +170,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       volleyballMale: 11,
       volleyballFemale: 12,
       basketballMale: 5,
-      basketballFemale: 7,
+      basketballFemale: 8,
       faculty: 3,
       eightBallPool: 1
     }
@@ -278,7 +278,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
       volleyballMale: 11,
       volleyballFemale: 12,
       basketballMale: 5,
-      basketballFemale: 7,
+      basketballFemale: 8,
     }
     const max = maxMap[key] || 0
 
@@ -390,7 +390,7 @@ export default function BookingForm({ seatNumber, onClose, onComplete }: Booking
                 ) : (
                   <>
                     <option value="volleyball">Volleyball (Female) - {getTeamAvailability('volleyball', 'female').available}/12 available</option>
-                    <option value="basketball">Basketball (Female) - {getTeamAvailability('basketball', 'female').available}/7 available</option>
+                    <option value="basketball">Basketball (Female) - {getTeamAvailability('basketball', 'female').available}/8 available</option>
                     <option value="8ballpool">8 Ball Pool - {getTeamAvailability('8ballpool', 'female').available}/1 available</option>
                   </>
                 )}
