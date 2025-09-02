@@ -46,14 +46,6 @@ export default function BusLayout({ seats, onSeatClick, selectedSeat }: BusLayou
     return 'bus-seat available'
   }
 
-  const getSeatTooltip = (seat: Seat | undefined, seatNumber: number) => {
-    if (seat?.is_booked && seat.booking) {
-      return `${seat.booking.student_name} (${seat.booking.sport})`
-    }
-    
-    return `Seat ${seatNumber} - Available`
-  }
-
   return (
     <div className="relative">
       {/* Bus outline */}
